@@ -3,7 +3,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Toaster } from '@/components/ui/toaster';
-import { Code2 } from 'lucide-react';
+import { Logo } from '@/components/logo';
 
 export const metadata: Metadata = {
   title: 'BR code | Instant QR Code Generator',
@@ -36,7 +36,7 @@ export default function RootLayout({
             <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="container flex h-14 items-center">
                 <div className="mr-4 flex items-center">
-                  <Code2 className="mr-2 h-6 w-6 text-primary" />
+                  <Logo />
                   <span className="font-bold">BR code</span>
                 </div>
                 <div className="flex flex-1 items-center justify-end space-x-2">
