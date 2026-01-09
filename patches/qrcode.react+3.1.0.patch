@@ -1,0 +1,12 @@
+diff --git a/node_modules/qrcode.react/package.json b/node_modules/qrcode.react/package.json
+index 108397a..8b96499 100644
+--- a/node_modules/qrcode.react/package.json
++++ b/node_modules/qrcode.react/package.json
+@@ -53,6 +53,6 @@
+     "react-dom": "^18.2.0"
+   },
+   "peerDependencies": {
+-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
++    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+   }
+ }

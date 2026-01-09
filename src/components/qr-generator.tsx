@@ -47,7 +47,7 @@ export function QrGenerator() {
   const [qrValue, setQrValue] = React.useState("");
   const [qrOptions, setQrOptions] = React.useState({
     size: 256,
-    fgColor: "#0047AB", // Cobalt Blue
+    fgColor: "#0000FF",
     bgColor: "#FFFFFF",
   });
   const [isSuggesting, setIsSuggesting] = React.useState(false);
@@ -155,7 +155,7 @@ export function QrGenerator() {
             <div className="mt-8 grid gap-8 md:grid-cols-2">
               <div className="flex flex-col items-center justify-center rounded-lg border bg-card-foreground/5 p-6">
                 <div
-                  className="rounded-lg bg-white p-4 shadow-md"
+                  className="relative rounded-lg bg-white p-4 shadow-md"
                   style={{ backgroundColor: qrOptions.bgColor }}
                 >
                   <QRCodeSVG
@@ -166,6 +166,37 @@ export function QrGenerator() {
                     bgColor={qrOptions.bgColor}
                     level="H"
                   />
+                   <div
+                    className="absolute inset-0 flex items-center justify-center bg-transparent"
+                    style={{
+                      width: qrOptions.size,
+                      height: qrOptions.size,
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      pointerEvents: 'none'
+                    }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-md p-1"
+                      style={{
+                        width: qrOptions.size * 0.3,
+                        height: qrOptions.size * 0.3,
+                        backgroundColor: qrOptions.bgColor,
+                      }}
+                    >
+                      <span
+                        className="font-bold text-center"
+                        style={{
+                          color: qrOptions.fgColor,
+                          fontSize: qrOptions.size * 0.08,
+                          lineHeight: 1,
+                        }}
+                      >
+                        BaseCode
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="space-y-6">

@@ -1,0 +1,23 @@
+diff --git a/node_modules/qrcode.react/lib/index.d.ts b/node_modules/qrcode.react/lib/index.d.ts
+index f1e7f3c..2099912 100644
+--- a/node_modules/qrcode.react/lib/index.d.ts
++++ b/node_modules/qrcode.react/lib/index.d.ts
+@@ -1,5 +1,5 @@
+ /// <reference types="react" />
+-import * as React from 'react';
++import React from 'react';
+ export declare type QRProps = {
+     value: string;
+     size?: number;
+diff --git a/node_modules/qrcode.react/package.json b/node_modules/qrcode.react/package.json
+index 5481774..e2d785a 100644
+--- a/node_modules/qrcode.react/package.json
++++ b/node_modules/qrcode.react/package.json
+@@ -53,6 +53,6 @@
+     "react-dom": "^18.2.0"
+   },
+   "peerDependencies": {
+-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
++    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+   }
+ }
