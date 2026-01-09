@@ -189,7 +189,7 @@ export function QrGenerator() {
                         className="font-bold text-center"
                         style={{
                           color: qrOptions.fgColor,
-                          fontSize: qrOptions.size * 0.08,
+                          fontSize: qrOptions.size * 0.06,
                           lineHeight: 1,
                         }}
                       >
