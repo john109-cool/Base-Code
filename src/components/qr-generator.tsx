@@ -43,12 +43,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const logoImage =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAMJSURBVHja7J1LbtNAEIZnEy+AsgMhS3wASt4gT5CXkP6A/gD6A+gPhJ9A6S1ICp+U3AHEk+QGCaQhRQKEfwxLG2s228/zZ3YmPjC2jT3jz5/t7KyLgOuA64Br/zXAdUA1gP4bYLoApgvgKkG+bZAbAJuS/Pq+bQDXANcB1wHXANcB1wHXAdf+ZwDcBVyDDF0AEyV52Y91wHXAdeDUAaxrQc/bYDYArif5y2YbwHXAdeCXAeyy3t0GMA2AfyT5xWYbwHXA9QDXANY14BqAdcB1wHXA9V9/AcwGgGzC5j+B7QH2A9gOYD84w2YbwHXA9W8A9sUuG8A0A/5D8ovNNgDrgOuA6wDXANcAvGvBNQDrgOuA64Dr//oXwAc22wCmCeA7Se5stgFcB1wHXgawCwCmKfkmgGkGfOfB/xOAbQzXAD7YAGAzAL4bQPZg8w/A+mYbrgOuA64DrgOuA64DrgOuA679z/kBzAZAbMLmP4HtAfYDWDuAzc02gOuA64DrgOuAaxrwuQ0g24CsG0A2B9gMIGv/DWA+yJp/A9iHTDafAew/QNaG624D+GSgXATY9j8g2wywH8B+AOsAsg/g8wBsP7ANgL0H9rMZywbcBVyDDF0AEyV52Y91wHXAdeDUAaxrQc/bYDYArif5y2YbwHXAdeCXAeyy3t0GMA2AfyT5xWYbwHXA9QDXANY14BqAdcB1wHXA9V9/AcwGgGzC5j+B7QH2A9gOYD84w2YbwHXA9W8A9sUuG8A0A/5D8ovNNgDrgOuA6wDXANcAvGvBNQDrgOuA64Dr//oXwAc22wCmCeA7Se5stgFcB1wHXgawCwCmKfkmgGkGfOfB/xOAbQzXAD7YAGAzAL4bQPZg8w/A+mYbrgOuA64DrgOuA64DrgOuA679z/kBzAZAbMLmP4HtAfYDWDuAzc02gOuA64DrgOuAaxrwuQ0g24CsG0A2B9gMIGv/DWA+yJp/A9iHTDafAew/QNaG624D+GSgXATY9j8g2wywH8B+AOsAsg/g8wBsP7ANgL0H9rMZywbcBVyDDF0AEyV52Y91wHXAdeDUAaxrQc/bYDYArif5y2YbwHXAdf4vAdYBcB049APx/gL874w3ABiJ+AAAAABJRU5ErkJggg==";
+
 export function QrGenerator() {
   const [qrValue, setQrValue] = React.useState("");
   const [qrOptions, setQrOptions] = React.useState({
     size: 256,
-    fgColor: "#3b82f6",
-    bgColor: "#ffffff",
+    fgColor: "#0047AB", // Cobalt Blue
+    bgColor: "#FFFFFF",
   });
   const [isSuggesting, setIsSuggesting] = React.useState(false);
   const qrCodeRef = React.useRef<SVGSVGElement>(null);
@@ -98,9 +101,9 @@ export function QrGenerator() {
       
       const img = new Image();
       img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+        canvas.width = qrOptions.size;
+        canvas.height = qrOptions.size;
+        ctx.drawImage(img, 0, 0, qrOptions.size, qrOptions.size);
         const pngUrl = canvas
           .toDataURL("image/png")
           .replace("image/png", "image/octet-stream");
@@ -115,6 +118,13 @@ export function QrGenerator() {
     }
   };
 
+  const imageSettings = {
+    src: logoImage,
+    height: qrOptions.size * 0.2,
+    width: qrOptions.size * 0.2,
+    excavate: true,
+  };
+  
   return (
     <Card className="w-full max-w-4xl shadow-2xl shadow-primary/10">
       <CardHeader className="text-center">
@@ -165,6 +175,7 @@ export function QrGenerator() {
                     fgColor={qrOptions.fgColor}
                     bgColor={qrOptions.bgColor}
                     level="H"
+                    imageSettings={imageSettings}
                   />
                 </div>
               </div>
