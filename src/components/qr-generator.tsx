@@ -109,7 +109,7 @@ export function QrGenerator() {
           .replace("image/png", "image/octet-stream");
         const downloadLink = document.createElement("a");
         downloadLink.href = pngUrl;
-        downloadLink.download = "br-code.png";
+        downloadLink.download = "base-code.png";
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
@@ -129,7 +129,7 @@ export function QrGenerator() {
     <Card className="w-full max-w-4xl shadow-2xl shadow-primary/10">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-bold tracking-tight">
-          BR code
+          base code
         </CardTitle>
         <CardDescription className="text-lg">
           Instantly convert any URL into a beautiful, custom QR code.

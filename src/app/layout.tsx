@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Logo } from '@/components/logo';
 
 export const metadata: Metadata = {
-  title: 'BR code | Instant QR Code Generator',
+  title: 'base code | Instant QR Code Generator',
   description: 'Create and customize QR codes from any URL instantly.',
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
               <div className="container flex h-14 items-center">
                 <div className="mr-4 flex items-center">
                   <Logo />
-                  <span className="font-bold">BR code</span>
+                  <span className="font-bold">base code</span>
                 </div>
                 <div className="flex flex-1 items-center justify-end space-x-2">
                   <ThemeToggle />
