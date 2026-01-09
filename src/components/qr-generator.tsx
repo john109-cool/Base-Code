@@ -14,7 +14,6 @@ import {
   Scaling,
 } from "lucide-react";
 
-import { suggestColorsAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,7 +49,6 @@ export function QrGenerator() {
     fgColor: "#0000FF",
     bgColor: "#FFFFFF",
   });
-  const [isSuggesting, setIsSuggesting] = React.useState(false);
   const qrCodeRef = React.useRef<SVGSVGElement>(null);
   const { toast } = useToast();
 
@@ -63,29 +61,6 @@ export function QrGenerator() {
 
   const onSubmit = (data: FormValues) => {
     setQrValue(data.url);
-  };
-
-  const handleSuggestColors = async () => {
-    setIsSuggesting(true);
-    const result = await suggestColorsAction();
-    if ("error" in result) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: result.error,
-      });
-    } else {
-      setQrOptions((prev) => ({
-        ...prev,
-        fgColor: result.primaryColor,
-        bgColor: result.backgroundColor,
-      }));
-      toast({
-        title: "Colors Suggested!",
-        description: "New AI-powered colors have been applied.",
-      });
-    }
-    setIsSuggesting(false);
   };
 
   const handleDownload = () => {
@@ -266,18 +241,6 @@ export function QrGenerator() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button
-                    onClick={handleSuggestColors}
-                    variant="outline"
-                    disabled={isSuggesting}
-                  >
-                    {isSuggesting ? (
-                      <Loader className="animate-spin" />
-                    ) : (
-                      <Sparkles />
-                    )}
-                    Suggest Colors with AI
-                  </Button>
                   <Button onClick={handleDownload}>
                     <Download />
                     Download PNG
