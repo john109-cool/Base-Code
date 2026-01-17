@@ -4,7 +4,7 @@ import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { QRCodeSVG } from "qrcode.react";
+import QRCode from "react-qr-code";
 import {
   Download,
   Loader,
@@ -49,7 +49,7 @@ export function QrGenerator() {
     fgColor: "#0000FF",
     bgColor: "#FFFFFF",
   });
-  const qrCodeRef = React.useRef<SVGSVGElement>(null);
+  const qrCodeRef = React.useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -64,8 +64,8 @@ export function QrGenerator() {
   };
 
   const handleDownload = () => {
-    if (qrCodeRef.current) {
-      const svg = qrCodeRef.current;
+    const svg = qrCodeRef.current?.querySelector("svg");
+    if (svg) {
       const svgData = new XMLSerializer().serializeToString(svg);
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -76,6 +76,20 @@ export function QrGenerator() {
         canvas.width = qrOptions.size;
         canvas.height = qrOptions.size;
         ctx.drawImage(img, 0, 0, qrOptions.size, qrOptions.size);
+        
+        const boxSize = qrOptions.size * 0.3;
+        const x = (qrOptions.size - boxSize) / 2;
+        const y = (qrOptions.size - boxSize) / 2;
+        ctx.fillStyle = qrOptions.bgColor;
+        ctx.fillRect(x, y, boxSize, boxSize);
+
+        ctx.fillStyle = qrOptions.fgColor;
+        const fontSize = qrOptions.size * 0.06;
+        ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("BaseCode", qrOptions.size / 2, qrOptions.size / 2);
+
         const pngUrl = canvas
           .toDataURL("image/png")
           .replace("image/png", "image/octet-stream");
@@ -133,14 +147,15 @@ export function QrGenerator() {
                   className="relative rounded-lg bg-white p-4 shadow-md"
                   style={{ backgroundColor: qrOptions.bgColor }}
                 >
-                  <QRCodeSVG
-                    ref={qrCodeRef}
-                    value={qrValue}
-                    size={qrOptions.size}
-                    fgColor={qrOptions.fgColor}
-                    bgColor={qrOptions.bgColor}
-                    level="H"
-                  />
+                  <div ref={qrCodeRef}>
+                    <QRCode
+                      value={qrValue}
+                      size={qrOptions.size}
+                      fgColor={qrOptions.fgColor}
+                      bgColor={qrOptions.bgColor}
+                      level="H"
+                    />
+                  </div>
                    <div
                     className="absolute inset-0 flex items-center justify-center bg-transparent"
                     style={{
