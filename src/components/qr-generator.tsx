@@ -5,11 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import QRCode from "react-qr-code";
+import { toPng } from "html-to-image";
 import {
   Download,
-  Loader,
   QrCode,
-  Sparkles,
   Palette,
   Scaling,
 } from "lucide-react";
@@ -27,14 +26,12 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { useToast } from "@/hooks/use-toast";
-import { Separator } from "./ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   url: z.string().url({ message: "Please enter a valid URL." }),
@@ -50,7 +47,6 @@ export function QrGenerator() {
     bgColor: "#FFFFFF",
   });
   const qrCodeRef = React.useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -63,52 +59,28 @@ export function QrGenerator() {
     setQrValue(data.url);
   };
 
-  const handleDownload = () => {
-    const svg = qrCodeRef.current?.querySelector("svg");
-    if (svg) {
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      
-      const img = new Image();
-      img.onload = () => {
-        canvas.width = qrOptions.size;
-        canvas.height = qrOptions.size;
-        ctx.drawImage(img, 0, 0, qrOptions.size, qrOptions.size);
-        
-        const boxSize = qrOptions.size * 0.3;
-        const x = (qrOptions.size - boxSize) / 2;
-        const y = (qrOptions.size - boxSize) / 2;
-        ctx.fillStyle = qrOptions.bgColor;
-        ctx.fillRect(x, y, boxSize, boxSize);
-
-        ctx.fillStyle = qrOptions.fgColor;
-        const fontSize = qrOptions.size * 0.06;
-        ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("BaseCode", qrOptions.size / 2, qrOptions.size / 2);
-
-        const pngUrl = canvas
-          .toDataURL("image/png")
-          .replace("image/png", "image/octet-stream");
-        const downloadLink = document.createElement("a");
-        downloadLink.href = pngUrl;
-        downloadLink.download = "base-code.png";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      };
-      img.src = "data:image/svg+xml;base64," + btoa(svgData);
+  const handleDownload = React.useCallback(() => {
+    if (qrCodeRef.current === null) {
+      return;
     }
-  };
-  
+
+    toPng(qrCodeRef.current, { cacheBust: true })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "base-code.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Card className="w-full max-w-4xl shadow-2xl shadow-primary/10">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-bold tracking-tight">
-          Base code
+          Base Code
         </CardTitle>
         <CardDescription className="text-lg">
           Instantly convert any URL into a beautiful, custom QR code.
@@ -144,10 +116,10 @@ export function QrGenerator() {
             <div className="mt-8 grid gap-8 md:grid-cols-2">
               <div className="flex flex-col items-center justify-center rounded-lg border bg-card-foreground/5 p-6">
                 <div
-                  className="relative rounded-lg bg-white p-4 shadow-md"
+                  className="rounded-lg bg-white p-4 shadow-md"
                   style={{ backgroundColor: qrOptions.bgColor }}
                 >
-                  <div ref={qrCodeRef}>
+                  <div ref={qrCodeRef} className="relative">
                     <QRCode
                       value={qrValue}
                       size={qrOptions.size}
@@ -155,36 +127,27 @@ export function QrGenerator() {
                       bgColor={qrOptions.bgColor}
                       level="H"
                     />
-                  </div>
-                   <div
-                    className="absolute inset-0 flex items-center justify-center bg-transparent"
-                    style={{
-                      width: qrOptions.size,
-                      height: qrOptions.size,
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      pointerEvents: 'none'
-                    }}
-                  >
                     <div
-                      className="flex items-center justify-center rounded-md p-1"
                       style={{
-                        width: qrOptions.size * 0.3,
-                        height: qrOptions.size * 0.3,
-                        backgroundColor: qrOptions.bgColor,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        background: qrOptions.bgColor,
+                        padding: '4px',
                       }}
                     >
-                      <span
-                        className="font-bold text-center"
+                      <div
                         style={{
                           color: qrOptions.fgColor,
-                          fontSize: qrOptions.size * 0.06,
-                          lineHeight: 1,
+                          fontSize: qrOptions.size * 0.02,
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
                         }}
                       >
                         BaseCode
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -256,7 +219,7 @@ export function QrGenerator() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button onClick={handleDownload}>
+                  <Button onClick={handleDownload} disabled={!qrValue}>
                     <Download />
                     Download PNG
                   </Button>
